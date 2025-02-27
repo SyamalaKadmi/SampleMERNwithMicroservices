@@ -105,6 +105,27 @@ Make sure you have the following installed on your system:
     Proceeding with Github as code repository due to permission issues
     ![codeCommitIssue](Images/codeCommitError.png)
 2. Jenkins Setup & Configuration
-    1. Using the existing Jenkins server to configure
+    1. Setup a Jenkins server on ec2 instance
+    2. GitHub Access Token: Create a personal access token with ```repo``` and ```admin:repo_hook``` permissions in Github
+    3. Install required plugins on Jenkins Server - GitHub Integration, Docker Pipeline, Amazon ECR, Pipeline
+    4. Configure Github credentials in Jenkins. 
+        - Go to Jenkins Dashboard -> Manage Jenkins -> Credentials -> System -> Global credentials (unrestricted) -> Add Credentials
+        - Add Kind: Secret text, Secret Github Personal Access Token, ID: github-token, Description: GitHub Token for Jenkins
+3. Create a Jenkins Pipeline Job
+    1. Go to Jenkins Dashboard -> New Item
+    2. Enter the job name (e.g., MERN-CI-CD-Pipeline) and select Pipeline and Click Ok
+    3. Add the Github url -- https://github.com/SyamalaKadmi/SampleMERNwithMicroservices.git
+    4. Under Build Triggers: Check GitHub hook trigger for GITScm polling. This allows Jenkins to trigger builds on new commits.
+    5. Add the Pipeline script --> JenkinsFile
+4. Configure Webhook 
+    1. In GitHub Repository, go to settings -> Webhooks -> Add Webhook -> Payload url 
+        ```
+            http://<EC2-Public-IP>:8080/github-webhook/
+        ```
+        Content type: Application/json
+        Choose Just the push event and click Add webhook
+
+
+
 
     
