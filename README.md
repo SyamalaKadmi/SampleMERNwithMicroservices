@@ -124,8 +124,71 @@ Make sure you have the following installed on your system:
         ```
         Content type: Application/json
         Choose Just the push event and click Add webhook
+5. Validation 
+    1. Verify the Jenkins pipeline is running successfully after a commit is made to repository
+        ![JenkinsSuccess](Images/JenkinsSuccess.png)
+    2. Verify images to pushed to AWS ECR
+        - Frontend
+        ![Frontend](Images/FrontendJenkins.png)
+        - backend/helloService
+        ![HelloService](Images/helloServiceJenkins.png)
+        - backend/profileService
+        ![ProfileService](Images/profileServiceJenkins.png)
+
+---
+
+### 5. Infrastructure as Code (IaC) with Boto3
+Create a python script [setup_infrastructure.py](setup_infrastructure.py) to 
+    - create VPC with public & private subnets
+    - setup security groups for frontend & backend
+    Verification - 
+    ![IaC](Images/IACwithBoto3.png)
+
+### 6. Deploying Backend Services
+1. Create a launch template with details of deployment of helloService & ProfileService for backend using python script - [create_launch_template.py](create_launch_template.py)
+    ![LaunchTemplate](Images/LaunchTemplate.png)
+2. Create ASG using [create_asg.py](create_asg.py)
+Verification: 
+    - Run the script and verify its successfully ran
+    ```bash
+        python3 create_asg.py
+    ```
+    ![ASG](Images/ASG.png)
+    - Verify that its created in AWS console
+    ![ASGImage](Images/ASGImage.png)
+### 7. Set Up Networking
+1. Create a load balancer for the backend ASG
+    ![BackendLoadbalancer](Images/BackendLoadbalancer.png)
+2. Configure DNS
 
 
+## Troubleshooting
+1. Error with connecting to ECR while running Jenkins Pipeline
+[Pipeline] sh
++ docker login --username AWS --password-stdin 975050024946.dkr.ecr.us-east-1.amazonaws.com
++ aws ecr get-login-password --region us-east-1
+
+Unable to locate credentials. You can configure credentials by running "aws configure".
+Error: Cannot perform an interactive login from a non TTY device
+
+Solution: This might be because aws cli is configured with ec2-user and Jenkins pipeline might be running as 'Jenkins'
+1. After configuring aws cli, credentials are stored in the system. Copy them to the Jenkins user
+    ```bash
+        sudo mkdir -p /var/lib/jenkins/.aws
+        sudo cp ~/.aws/credentials /var/lib/jenkins/.aws/credentials
+        sudo cp ~/.aws/config /var/lib/jenkins/.aws/config
+    ```
+2. Ensure the jenkins user has permissions to read these files
+    ```bash
+        sudo chown -R jenkins:jenkins /var/lib/jenkins/.aws
+        sudo chmod 600 /var/lib/jenkins/.aws/credentials
+        sudo chmod 600 /var/lib/jenkins/.aws/config
+    ```
+3. Restart Jenkins
+    ```bash
+        sudo systemctl restart Jenkins
+    ```
+4. Retry the pipeline
 
 
     
