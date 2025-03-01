@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-profileservice-deployment
+  labels:
+    app: backend-profileservice
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: backend-profileservice
+  template:
+    metadata:
+      labels:
+        app: backend-profileservice
+    spec:
+      containers:
+        - name: backend-profileservice
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 3002

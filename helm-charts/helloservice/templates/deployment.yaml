@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-helloservice-deployment
+  labels:
+    app: backend-helloservice
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: backend-helloservice
+  template:
+    metadata:
+      labels:
+        app: backend-helloservice
+    spec:
+      containers:
+        - name: backend-helloservice
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 3001
