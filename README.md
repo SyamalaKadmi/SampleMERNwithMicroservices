@@ -367,6 +367,7 @@ Verification:
 ---
 
 ### 12. Documentation
+![Architecture](Images/Architecture.png)
 1. Architecture Diagram:
     - AWS Architecture (EC2 + ASG + Load Balancer)
     - Kubernetes Architecture (EKS + Helm)
